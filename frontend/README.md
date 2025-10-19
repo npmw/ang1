@@ -1,27 +1,63 @@
-# Frontend
+# Frontend (Angular 16)
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 16.2.16.
+This is a modular Angular 16 app scaffolded for future growth, with Core/Shared modules, lazy-loaded features, standalone component example, HTTP setup (interceptor/guard/resolver), and a proxy for a Spring Boot backend.
 
-## Development server
+## Prerequisites
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+- Node.js 18+ (works on Node 22)
+- npm 9+
 
-## Code scaffolding
+## Install & Run
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+```bash
+npm install
+npm start # same as: ng serve -o --configuration development
+```
+
+Dev server: `http://localhost:4200`.
+
+Proxy to backend: requests to `/api/**` are proxied to `http://localhost:8080` (config at `proxy.conf.json`).
+
+## Project Structure
+
+- `src/app/core`: singleton services, guards, interceptors, header/footer
+- `src/app/shared`: shared components/directives/pipes
+- `src/app/features/*`: lazy feature modules (auth, dashboard, users, contact)
+- `src/app/pages/about`: standalone component demo
+- `src/environments/*`: environment configs with file replacements
+
+## Angular Concepts Used
+
+- NgModules, Standalone component, Routing (lazy + standalone route)
+- Template-driven and Reactive Forms
+- Dependency Injection with `inject()` API
+- HttpClient, Interceptors, Guards, Resolvers
+- Directives, Pipes, and a basic shared component
+
+## Backend Integration (Spring Boot)
+
+- Use `ApiService` which prefixes calls with `/api`. Example:
+
+```ts
+this.api.get<User[]>('/users')
+```
+
+- Configure Spring Boot to run on `localhost:8080`. The dev proxy removes `/api` via `pathRewrite`.
 
 ## Build
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+```bash
+npm run build # prod build (dist/frontend)
+```
 
-## Running unit tests
+## Testing
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+```bash
+npm test
+```
 
-## Running end-to-end tests
+## Adding New Features
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
-
-## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+- Generate a module: `ng g module features/products --routing`
+- Add routes in the new `*-routing.module.ts`
+- Lazy load by adding a route in `app-routing.module.ts`.
